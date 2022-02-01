@@ -1,5 +1,4 @@
 const { PubSub } = require('graphql-subscriptions');
-const { messages } = require('./db');
 const db = require('./db');
 
 const MESSAGE_ADDED = 'MESSAGE_ADDED';
@@ -16,17 +15,17 @@ const Query = {
   messages: (_root, _args, { userId }) => {
     requireAuth(userId);
     return db.messages.list();
-  },
+  }
 };
 
 const Mutation = {
   addMessage: (_root, { input }, { userId }) => {
     requireAuth(userId);
-    const messageId = db.messages.create({ from: userId, text: input.text });
+    const messageId = db.messages.create({from: userId, text: input.text});
     const message = db.messages.get(messageId);
-    pubSub.publish(MESSAGE_ADDED, { messageAdded: message });
+    pubSub.publish(MESSAGE_ADDED, {messageAdded: message});
     return message;
-  },
+  }
 };
 
 const Subscription = {

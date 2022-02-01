@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useSubscription } from '@apollo/react-hooks';
+import { useQuery, useMutation, useSubscription } from '@apollo/client';
 import { addMessageMutation, messageAddedSubscription, messagesQuery } from './graphql/queries';
 
 export function useChatMessages() {
@@ -6,7 +6,8 @@ export function useChatMessages() {
   const messages = data ? data.messages : [];
   useSubscription(messageAddedSubscription, {
     onSubscriptionData: ({ client, subscriptionData }) => {
-      client.writeData({
+      client.writeQuery({
+        query: messagesQuery,
         data: {
           messages: messages.concat(subscriptionData.data.messageAdded),
         },
